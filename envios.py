@@ -1,4 +1,7 @@
 ﻿# envios.py
+from decimal import Decimal, ROUND_HALF_UP
+
+
 CONFIG = {
     "L1": 3,
     "L2": 10,
@@ -7,6 +10,13 @@ CONFIG = {
     "DESC_VIP": 0.15,
     "RECARGO_FINDE": 2000,
 }
+
+
+def _redondear_100(valor):
+    pasos = (Decimal(str(valor)) / Decimal("100")).quantize(
+        Decimal("1"), rounding=ROUND_HALF_UP
+    )
+    return int(pasos * Decimal("100"))
 
 
 def calc(p, z, c, d, cup=None, flag=False):
@@ -42,4 +52,4 @@ def calc(p, z, c, d, cup=None, flag=False):
         t = 5000
     if flag:
         print("costo:", t)
-    return int(t / 100) * 100
+    return _redondear_100(t)
