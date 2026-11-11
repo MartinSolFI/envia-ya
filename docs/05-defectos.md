@@ -20,6 +20,15 @@ python -m pytest tests -v
 python -m pytest --cov=envios --cov-branch --cov-report=term-missing -q
 ```
 
+Para reproducir los 16 fallos, la rama `test/suite` conserva el `envios.py` heredado y los 43 casos:
+
+```powershell
+git switch test/suite
+python -m pytest tests -v
+```
+
+En `main` la suite final está en verde con 98 pruebas. No uses `main` para la captura de fallos.
+
 ## 3. Resultado de la ejecución
 
 | Métrica | Valor |
@@ -28,9 +37,13 @@ python -m pytest --cov=envios --cov-branch --cov-report=term-missing -q
 | Casos CB automatizados | 17 |
 | Total de casos | 43 |
 | Pruebas ejecutadas | 86 (43 contra `calc` y 43 contra la referencia) |
-| Pruebas aprobadas | 70 |
-| Pruebas fallidas | 16 |
+| Pruebas aprobadas | 70 de 86 (81,4 %) |
+| Pruebas fallidas | 16 de 86 (18,6 %) |
+| Casos que pasan | 27 de 43 (62,8 %) |
 | Defectos encontrados | 6 |
+| Defectos por severidad | 5 Alta, 1 Baja |
+| Defectos por prioridad | 5 Alta, 1 Media |
+| Densidad de defectos | 14,6 por cada 100 LOC (6 / 41 × 100) |
 | Cobertura de sentencias | 100 % (29 de 29) |
 | Cobertura de ramas | 100 % (26 de 26) |
 | Líneas sin cubrir | Ninguna |
@@ -39,7 +52,7 @@ La cobertura es alta porque los casos CB recorren todos los caminos del código.
 
 ## 4. Defectos encontrados
 
-| ID | Defecto | Requisito | Evidencia | Esperado | Obtenido | Severidad | Prioridad |
+| ID | Defecto | Requisito | Pasos / evidencia | Esperado | Obtenido | Severidad | Prioridad |
 |---|---|---|---|---|---|---|---|
 | DEF-01 | El tramo 1 usa `p <= L1` e incluye los 3 kg. Debe ser `p < 3`. | R3 | CN-10: 3 kg, urbana, normal, día 3 | $9.000 | $6.000 | Alta | Alta |
 | DEF-02 | El recargo de fin de semana solo aplica con `d > 6`. Ignora el sábado (día 6). | R5 | CN-17: 2 kg, urbana, normal, día 6 | $8.000 | $6.000 | Alta | Alta |
@@ -60,6 +73,17 @@ La cobertura es alta porque los casos CB recorren todos los caminos del código.
 | DEF-06 | CN-01, CN-02, CN-03, CB-02, CB-03 |
 
 CN-19 combina DEF-02 y DEF-05; CN-26 combina DEF-01 y DEF-05. Por eso aparecen en dos defectos.
+
+### Justificación de severidad y prioridad
+
+| Defecto | Severidad | Prioridad | Justificación |
+|---|---|---|---|
+| DEF-01 | Alta | Alta | Cobra $3.000 menos en el límite de 3 kg, un caso frecuente y explícito de R3. |
+| DEF-02 | Alta | Alta | Omite $2.000 los sábados, un día frecuente; afecta CN-17 y CN-19. |
+| DEF-03 | Alta | Alta | Acepta zonas inválidas y devuelve un cobro en vez de rechazar la entrada. |
+| DEF-04 | Alta | Alta | Acepta días inválidos y devuelve un cobro en vez de rechazar la entrada. |
+| DEF-05 | Alta | Alta | Redondea siempre hacia abajo y afecta varios montos; puede cobrar de menos. |
+| DEF-06 | Baja | Media | El monto es correcto; solo falta la tilde en el mensaje de error. |
 
 ## 5. Detalle de los fallos más importantes
 
@@ -104,9 +128,17 @@ El error se lanza bien, pero el texto no coincide con R1. No cambia el dinero co
 
 ## 8. Para la sustentación
 
-- Puedo mostrar los 16 fallos con `python -m pytest tests -v` y explicar que los valores esperados salen de los documentos, no del código.
+- Puedo mostrar los 16 fallos con `git switch test/suite` y `python -m pytest tests -v`, y explicar que los valores esperados salen de los documentos, no del código.
 - Puedo mostrar que la referencia con `Decimal` y `ROUND_HALF_UP` pasa los 43 casos. Eso demuestra que los resultados esperados están bien calculados.
 - Puedo mostrar la cobertura del 100 % y aclarar que una cobertura alta no garantiza resultados correctos, porque el código heredado recorre todas sus ramas y aun así falla 16 pruebas.
+
+### Capturas para el PDF
+
+- `git switch test/suite` y `python -m pytest tests -v` con los 16 fallos.
+- `python -m pytest --cov=envios --cov-branch --cov-report=term-missing -q` con 100 % de cobertura.
+- `git log --oneline --graph --all --decorate`.
+- `git tag -n`.
+- En `main`, `python -m pytest -q` con 98 pruebas aprobadas.
 
 ## 9. Estado final de los defectos
 
