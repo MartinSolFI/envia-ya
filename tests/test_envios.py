@@ -24,10 +24,12 @@ def referencia(p, z, c, d, cup=None):
     else:
         total = Decimal("9000") + (peso - Decimal("10")) * Decimal("800")
 
-    if z == "rural":
-        total = total * Decimal("1.20")
-    elif z == "nacional":
-        total = total * Decimal("1.40")
+    aplica_zona = not (c == "empresarial" and peso > Decimal("10"))
+    if aplica_zona:
+        if z == "rural":
+            total = total * Decimal("1.20")
+        elif z == "nacional":
+            total = total * Decimal("1.40")
 
     if d >= 6:
         total = total + Decimal("2000")
@@ -36,6 +38,8 @@ def referencia(p, z, c, d, cup=None):
         total = total * Decimal("0.95")
     elif c == "vip":
         total = total * Decimal("0.85")
+    elif c == "empresarial":
+        total = total * Decimal("0.88")
 
     if cup == "ENVIO10":
         total = total * Decimal("0.90")
@@ -81,6 +85,12 @@ CASOS_VALIDOS = [
     ("CB-15", {"p": 2, "z": "urbana", "c": "normal", "d": 1}, 6000),
     ("CB-16", {"p": 6, "z": "rural", "c": "frecuente", "d": 7, "cup": "ENVIO10"}, 10900),
     ("CB-17", {"p": 12, "z": "nacional", "c": "vip", "d": 1}, 12600),
+    ("CE-01", {"p": 2, "z": "urbana", "c": "empresarial", "d": 1}, 5300),
+    ("CE-02", {"p": 2, "z": "rural", "c": "empresarial", "d": 1}, 6300),
+    ("CE-03", {"p": 12, "z": "nacional", "c": "empresarial", "d": 1}, 9300),
+    ("CE-04", {"p": 10, "z": "nacional", "c": "empresarial", "d": 1}, 11100),
+    ("CE-05", {"p": 2, "z": "urbana", "c": "empresarial", "d": 1, "cup": "ENVIO10"}, 5000),
+    ("CE-06", {"p": 12, "z": "rural", "c": "empresarial", "d": 6, "cup": "ENVIO10"}, 10000),
 ]
 
 CASOS_INVALIDOS = [
