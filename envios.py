@@ -21,7 +21,7 @@ def _redondear_100(valor):
 
 def calc(p, z, c, d, cup=None, flag=False):
     if p <= 0 or p > 50:
-        raise ValueError("peso invalido")
+        raise ValueError("peso inválido")
     if z not in ("urbana", "rural", "nacional"):
         raise ValueError("zona inválida")
     if d < 1 or d > 7:
