@@ -78,8 +78,8 @@ CASOS_VALIDOS = [
     ("CB-12", {"p": 2, "z": "urbana", "c": "normal", "d": 1, "cup": "XYZ"}, 6000),
     ("CB-13", {"p": 2, "z": "urbana", "c": "normal", "d": 1, "cup": "ENVIO10"}, 5400),
     ("CB-14", {"p": 1, "z": "urbana", "c": "vip", "d": 1, "cup": "ENVIO10"}, 5000),
-    ("CB-15", {"p": 2, "z": "urbana", "c": "normal", "d": 1, "flag": True}, 6000),
-    ("CB-16", {"p": 6, "z": "rural", "c": "frecuente", "d": 7, "cup": "ENVIO10", "flag": True}, 10900),
+    ("CB-15", {"p": 2, "z": "urbana", "c": "normal", "d": 1}, 6000),
+    ("CB-16", {"p": 6, "z": "rural", "c": "frecuente", "d": 7, "cup": "ENVIO10"}, 10900),
     ("CB-17", {"p": 12, "z": "nacional", "c": "vip", "d": 1}, 12600),
 ]
 
@@ -125,8 +125,7 @@ def test_error_esperado(caso, kwargs, mensaje):
     ids=[caso[0] for caso in CASOS_VALIDOS],
 )
 def test_referencia_casos_validos(caso, kwargs, esperado):
-    datos = {clave: valor for clave, valor in kwargs.items() if clave != "flag"}
-    assert referencia(**datos) == esperado
+    assert referencia(**kwargs) == esperado
 
 
 @pytest.mark.parametrize(
