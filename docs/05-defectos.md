@@ -59,7 +59,7 @@ La cobertura es alta porque los casos CB recorren todos los caminos del código.
 | DEF-05 | CN-12, CN-19, CN-21, CN-25 |
 | DEF-06 | CN-01, CN-02, CN-03, CB-02, CB-03 |
 
-CN-19 y CN-26 aparecen en dos defectos porque combinan más de un error: sábado no cobrado, tramo 1 mal aplicado y redondeo truncado.
+CN-19 combina DEF-02 y DEF-05; CN-26 combina DEF-01 y DEF-05. Por eso aparecen en dos defectos.
 
 ## 5. Detalle de los fallos más importantes
 
@@ -107,3 +107,16 @@ El error se lanza bien, pero el texto no coincide con R1. No cambia el dinero co
 - Puedo mostrar los 16 fallos con `python -m pytest tests -v` y explicar que los valores esperados salen de los documentos, no del código.
 - Puedo mostrar que la referencia con `Decimal` y `ROUND_HALF_UP` pasa los 43 casos. Eso demuestra que los resultados esperados están bien calculados.
 - Puedo mostrar la cobertura del 100 % y aclarar que una cobertura alta no garantiza resultados correctos, porque el código heredado recorre todas sus ramas y aun así falla 16 pruebas.
+
+## 9. Estado final de los defectos
+
+| Defecto | Rama | Commit | Merge | Estado | Pruebas |
+|---|---|---|---|---|---|
+| DEF-01 | `fix/DEF-01` | `5e411ec` | `6e1ab84` | Corregido | CN-10, CN-26 |
+| DEF-02 | `fix/DEF-02` | `1497b9c` | `5070c5f` | Corregido | CN-17, CN-19 |
+| DEF-03 | `fix/DEF-03` | `21ca729` | `3d4f325` | Corregido | CN-05, CB-08 |
+| DEF-04 | `fix/DEF-04` | `f999a5f` | `06567e7` | Corregido | CN-06, CN-07 |
+| DEF-05 | `fix/DEF-05` | `f528a4a` | `ee6d85d` | Corregido | CN-12, CN-19, CN-21, CN-25, CN-26 |
+| DEF-06 | `fix/DEF-06` | `93eb725` | `b4007b3` | Corregido | CN-01, CN-02, CN-03, CB-02, CB-03 |
+
+La suite final tiene 49 casos (43 CN/CB + 6 CE) y 98 pruebas. Los seis defectos se corrigieron en `v2.0.0`. La regresión de `v2.0.0` fue 86/86; en `v2.1.0` es 98/98. No queda ningún defecto crítico o alto abierto.

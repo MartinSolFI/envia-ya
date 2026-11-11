@@ -7,17 +7,20 @@ Estudiante: Martín Alejandro Solano Finol · Código: 0182410126
 |---|---|---|---|---|---|------|----|----|----|----|---|---|--------|
 | 4 | 1 | 0 | 1 | 2 | 6 | 50 | 3 | 10 | 20 % | 40 % | 15 % | $2.000 | 1 |
 
-Reglas por paridad: D=1 impar (tramo 1: peso < 3) · E=2 par (fin de semana antes de descuentos) · B=1 impar (se aplican cliente y luego cupón) · F=6 par (cupón inexistente se ignora).
+Reglas por paridad: D=1 impar (tramo 1: peso < 3) · E=2 par (fin de semana antes de descuentos) · B=1 impar (se aplican cliente y luego cupón) · F=6 par (cupón inexistente se ignora). La Parte 8 agrega R9-R11 para el cliente empresarial, independientes de la paridad.
 
-## 1. Especificación (R1–R8 con mis valores)
+## 1. Especificación (R1–R11 con mis valores)
 - **R1** El peso debe cumplir 0 < peso ≤ 50. Si no, error "peso inválido".
 - **R2** Si la zona no es urbana, rural o nacional, o el día no está entre 1 y 7, se lanza un error.
 - **R3** Tarifa base. Tramo 1 (peso < 3): $6.000. Tramo 2 (3 ≤ peso ≤ 10): $9.000. Más de 10 kg: $9.000 + $800 por cada kg sobre 10, proporcional.
 - **R4** Recargo por zona. Rural +20 %. Nacional +40 %. Urbana sin recargo.
 - **R5** Sábado (6) y domingo (7): +$2.000, antes de los descuentos.
-- **R6** Descuento de cliente: frecuente 5 %, VIP 15 %. Cupón ENVIO10: 10 %. Si hay cliente y cupón se aplican ambos: primero el del cliente y luego el cupón.
+- **R6** Descuento de cliente: frecuente 5 %, VIP 15 %, empresarial 12 %. Cupón ENVIO10: 10 %. Si hay cliente y cupón se aplican ambos: primero el del cliente y luego el cupón.
 - **R7** Un cupón que no existe se ignora.
 - **R8** El costo nunca es menor que $5.000. Se redondea al múltiplo de $100 más cercano; los $50 suben.
+- **R9** El cliente empresarial recibe un descuento del 12 %.
+- **R10** Si el peso supera 10 kg, el cliente empresarial no paga recargo de zona.
+- **R11** El descuento del cliente se aplica antes del cupón.
 
 ## 2. Historias de usuario
 
@@ -35,19 +38,29 @@ Como cliente quiero conocer el costo según el peso, la zona y el día para deci
 - Dado un paquete de 12 kg, nacional, cliente normal, día 2, cuando calculo, entonces el costo es $14.800 (10.600 × 1,40 = 14.840, redondeado).
 
 ### HU-03 · Descuentos, mínimo y redondeo (R6, R7, R8)
-Como cliente frecuente quiero que se apliquen mis descuentos y cupones para pagar menos.
+Como cliente quiero que se apliquen mis descuentos y cupones para pagar menos.
 - Dado 10 kg, urbana, VIP, día 1, cupón ENVIO10, cuando calculo, entonces el costo es $6.900 (9.000 × 0,85 × 0,90 = 6.885).
 - Dado 2 kg, urbana, normal, día 1, cupón "XYZ" (no existe), cuando calculo, entonces el cupón se ignora y el costo es $6.000.
 - Dado 0,1 kg, urbana, VIP, día 1, cupón ENVIO10, cuando calculo, entonces el costo es $5.000 (el mínimo).
 
-## 3. Matriz de trazabilidad (se completa en las partes 3 a 5)
+### HU-04 · Cliente empresarial (R9, R10, R11)
+Como cliente empresarial quiero un descuento del 12 % y no pagar recargo de zona en envíos pesados.
+- Dado un paquete de 2 kg, urbana, empresarial, día 1, cuando calculo, entonces el costo es $5.300.
+- Dado un paquete de 12 kg, nacional, empresarial, día 1, cuando calculo, entonces no se aplica el recargo de zona y el costo es $9.300.
+- Dado un paquete de 10 kg, nacional, empresarial, día 1, cuando calculo, entonces sí se aplica el recargo de zona y el costo es $11.100.
+- Dado un paquete de 2 kg, urbana, empresarial, día 1, con ENVIO10, cuando calculo, entonces el descuento del cliente va antes del cupón y el costo es $5.000.
+
+## 3. Matriz de trazabilidad
 | Requisito | Historia | Casos de prueba |
 |---|---|---|
-| R1 | HU-01 | (pendiente) |
-| R2 | HU-01 | (pendiente) |
-| R3 | HU-02 | (pendiente) |
-| R4 | HU-02 | (pendiente) |
-| R5 | HU-02 | (pendiente) |
-| R6 | HU-03 | (pendiente) |
-| R7 | HU-03 | (pendiente) |
-| R8 | HU-03 | (pendiente) |
+| R1 | HU-01 | CN-01, CN-02, CN-03, CB-02, CB-03 |
+| R2 | HU-01 | CN-05, CN-06, CN-07, CB-08 |
+| R3 | HU-02 | CN-04, CN-08, CN-09, CN-10, CN-11, CN-12, CN-13, CN-16, CB-04, CB-05, CB-17, CE-03, CE-04 |
+| R4 | HU-02 | CN-14, CN-15, CN-16, CN-18, CB-06, CB-07, CE-02, CE-04 |
+| R5 | HU-02 | CN-17, CN-18, CN-19, CN-25, CB-09, CE-06 |
+| R6 | HU-03 | CN-19, CN-20, CN-21, CN-22, CB-10, CB-11, CB-13, CB-16, CE-01, CE-02, CE-03, CE-04, CE-05, CE-06 |
+| R7 | HU-03 | CN-23, CB-12 |
+| R8 | HU-03 | CN-12, CN-21, CN-24, CN-25, CN-26, CB-14, CE-01, CE-02, CE-03, CE-04, CE-05, CE-06 |
+| R9 | HU-04 | CE-01, CE-02, CE-03, CE-04, CE-05, CE-06 |
+| R10 | HU-04 | CE-03, CE-04, CE-06 |
+| R11 | HU-04 | CE-05, CE-06 |

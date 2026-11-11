@@ -130,3 +130,7 @@ Resultados:
 - Puedo mostrar que la complejidad máxima bajó de 15 a 3 con `radon`.
 - Puedo explicar que las líneas subieron porque separé constantes y estrategias, pero la función principal quedó en complejidad 1.
 - Puedo mostrar las 86 pruebas aprobadas y la cobertura del 100 %.
+
+## 12. Nota de cierre (Parte 8)
+
+La Parte 8 agregó `ClienteEmpresarial` y la regla de zona para pesos mayores a 10 kg. Las métricas de la sección 7 son las de la Parte 6. El estado final de `v2.1.0` es: 98 pruebas aprobadas, 100 % de cobertura (97 sentencias y 16 ramas), complejidad máxima 3, `calc` con complejidad 2, LOC 153 y SLOC 108. Ver `08-cliente-empresarial.md`.

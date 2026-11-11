@@ -70,3 +70,7 @@ Casos: **CB-02, CB-03, CB-08, CB-12, CB-14, CB-16, CB-17** (7 casos).
 | 26 | CB-16 | CB-14 |
 
 Los 15 casos CB-01 a CB-15 juntos también dan 100 % de ramas, porque un conjunto de caminos independientes recorre todas las aristas.
+
+## 6. Nota de actualización
+
+Estos casos se diseñaron contra `v1.0.0`. En `v2.0.0` se eliminó el argumento `flag`; en la suite final, CB-15 y CB-16 ya no lo pasan. La cobertura final de `v2.1.0` es 100 % de 97 sentencias y 16 ramas. El detalle está en `06-refactorizacion.md` y `08-cliente-empresarial.md`.

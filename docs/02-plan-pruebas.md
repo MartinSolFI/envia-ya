@@ -2,6 +2,8 @@
 
 Estudiante: Martín Alejandro Solano Finol · Código: 0182410126
 
+> Nota: este plan se escribió para la versión 1.0.0. La Parte 8 lo amplía con R9-R11 y los casos CE-01 a CE-06; la regresión final es de 98 pruebas.
+
 ## 1. Alcance
 Voy a probar la función `calc` de `envios.py` (versión 1.0.0). Esto incluye:
 - validar peso, zona y día (R1, R2)
@@ -16,9 +18,9 @@ No voy a probar la interfaz, la base de datos, los pagos, la velocidad ni la seg
 | Nivel | Cómo lo aplico en este caso |
 |---|---|
 | Unidad | Pruebo `calc` sola, con pytest. Es el único nivel que automatizo en este trabajo. |
-| Integración | Reviso que `calc` reciba bien los datos del módulo que registra el envío y que lea `CONFIG` sin problema. Lo describo, no lo automatizo. |
+| Integración | Reviso que `calc` reciba bien los datos del módulo que registra el envío; en `v1.0.0` también revisaba que leyera `CONFIG` sin problema. Lo describo, no lo automatizo. |
 | Sistema | Registro un envío completo (peso, zona, cliente, día, cupón) y compruebo que el costo cobrado sea el de la especificación. |
-| Aceptación | EnvíaYa revisa unos casos con resultado calculado a mano y confirma que se cumplen R1 a R8. |
+| Aceptación | EnvíaYa revisa unos casos con resultado calculado a mano y confirma que se cumplen R1 a R8; la Parte 8 agrega R9 a R11. |
 
 ## 3. Estrategia
 - **Caja negra:** diseño casos solo con la especificación, usando particiones de equivalencia, valores límite y tabla de decisión.
@@ -27,7 +29,7 @@ No voy a probar la interfaz, la base de datos, los pagos, la velocidad ni la seg
 - **Regresión:** cada vez que corrijo algo, vuelvo a correr todos los casos.
 
 ## 4. Ambiente y herramientas
-Windows 11, Python 3, pytest, pytest-cov, Git, GitHub y Visual Studio Code.
+Windows 11, Python 3, pytest, pytest-cov, radon, Git, GitHub y Visual Studio Code.
 
 ## 5. Roles
 | Rol | Quién |
@@ -49,7 +51,7 @@ Windows 11, Python 3, pytest, pytest-cov, Git, GitHub y Visual Studio Code.
 ## 7. Criterios de entrada
 Empiezo a probar cuando tenga:
 - la especificación R1 a R8 con mis valores
-- `CONFIG` lleno con mis parámetros
+- `CONFIG` lleno con mis parámetros (solo en `v1.0.0`)
 - el código heredado con la etiqueta `v1.0.0`
 - Python, pytest y pytest-cov instalados
 

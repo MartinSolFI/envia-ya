@@ -39,9 +39,9 @@ No cambian las validaciones, las tarifas, los recargos de zona, el recargo de fi
 
 Riesgos y mitigación:
 
-- **Regresión en clientes existentes**: las 92 pruebas anteriores siguen pasando y se agregaron 6 casos CE.
+- **Regresión en clientes existentes**: las 86 pruebas anteriores siguen pasando. En el estado rojo pasaron 92 porque incluían las 6 pruebas de la referencia de los casos CE.
 - **Límite de 10 kg**: CE-04 prueba el borde exacto y CE-03 prueba un peso mayor.
-- **Orden descuento/cupón**: `calc` aplica `cliente.descuento` antes de `_descuento_cupon`.
+- **Orden descuento/cupón**: se conserva el orden; `calc` aplica `cliente.descuento` antes de `_descuento_cupon`.
 - **Compatibilidad**: los clientes existentes conservan su comportamiento. El cambio es retrocompatible.
 
 ## 4. Diseño
@@ -57,7 +57,7 @@ Esto respeta el principio Abierto/Cerrado: agregar un cliente nuevo no obliga a 
 ## 5. Ciclo rojo-verde
 
 1. Escribí primero los casos CE-01 a CE-06 y actualicé la función de referencia.
-2. **Estado rojo**: 6 fallos y 92 pruebas aprobadas. Los fallos fueron CE-01 a CE-06 porque `calc` no conocía el cliente empresarial.
+2. **Estado rojo**: 6 fallos y 92 pruebas aprobadas. De esas 92, 86 eran las pruebas anteriores y 6 eran las pruebas de la referencia CE. Los fallos fueron CE-01 a CE-06 porque `calc` no conocía el cliente empresarial.
 3. Implementé el cliente y la regla de zona.
 4. **Estado verde**: 98 pruebas aprobadas.
 
@@ -80,9 +80,20 @@ La versión es `v2.1.0`:
 - **MENOR = 1**: hay funcionalidad nueva y retrocompatible.
 - **PARCHE = 0**: no es una corrección.
 
+La API no cambia: `calc(p, z, c, d, cup=None)` sigue igual. El cliente empresarial se selecciona con `c="empresarial"`.
+
 ## 9. Archivos modificados
 
 - `envios.py`
 - `tests/test_envios.py`
 - `CHANGELOG.md`
 - `docs/08-cliente-empresarial.md`
+
+## 10. Estado final
+
+- Rama: `feature/cliente-empresarial`.
+- Commits: `cca2196` (pruebas), `00551bd` (implementación), `d5ef3d2` (documentación).
+- Merge a `main`: `db3eadd`.
+- Tag: `v2.1.0`.
+- Pruebas: 98 aprobadas.
+- Cobertura: 100 % (97 sentencias, 16 ramas).

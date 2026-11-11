@@ -70,3 +70,29 @@ Formato de entradas: peso, zona, cliente, día, cupón. Los resultados esperados
 3. Día 1, no es fin de semana → $9.000
 4. Frecuente 5 %: 9.000 × 0,95 = $8.550
 5. Redondeo: $8.550 está justo en la mitad y los $50 suben → **$8.600**
+
+## Parte 8 · Casos CE del cliente empresarial
+
+| ID | Req. | Entradas | Resultado esperado | Técnica |
+|---|---|---|---|---|
+| CE-01 | R9 | 2, urbana, empresarial, 1, - | $5.300 | Partición válida |
+| CE-02 | R9 | 2, rural, empresarial, 1, - | $6.300 | Partición válida |
+| CE-03 | R10 | 12, nacional, empresarial, 1, - | $9.300 | Valor límite (> 10 kg) |
+| CE-04 | R10 | 10, nacional, empresarial, 1, - | $11.100 | Valor límite (10 kg) |
+| CE-05 | R9, R11 | 2, urbana, empresarial, 1, ENVIO10 | $5.000 | Tabla de decisión |
+| CE-06 | R9, R10, R11 | 12, rural, empresarial, 6, ENVIO10 | $10.000 | Tabla de decisión |
+
+### CE-03: 12 kg, nacional, empresarial, día 1, sin cupón
+1. Más de 10 kg: 9.000 + 2 × 800 = $10.600
+2. Como el peso supera 10 kg, no se aplica el recargo nacional → $10.600
+3. Día 1, no es fin de semana → $10.600
+4. Empresarial 12 %: 10.600 × 0,88 = $9.328
+5. Se redondea a $100 → **$9.300**
+
+### CE-06: 12 kg, rural, empresarial, día 6, ENVIO10
+1. Más de 10 kg: 9.000 + 2 × 800 = $10.600
+2. Como el peso supera 10 kg, no se aplica el recargo rural → $10.600
+3. Sábado: 10.600 + 2.000 = $12.600
+4. Empresarial 12 %: 12.600 × 0,88 = $11.088
+5. Cupón ENVIO10 10 %: 11.088 × 0,90 = $9.979,2
+6. Se redondea a $100 → **$10.000**

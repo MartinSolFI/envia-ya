@@ -102,3 +102,15 @@ La salida se capturó antes de crear este documento. El tag `v2.0.0` queda en el
 - `v1.0.0` conserva el código heredado.
 - `v2.0.0` marca la refactorización y las correcciones.
 - Las 86 pruebas pasan y la cobertura es 100 % de sentencias y ramas.
+
+## 6. Versión 2.1.0 (Parte 8)
+
+La Parte 8 agregó el cliente empresarial y publicó `v2.1.0` sobre el commit `db3eadd`.
+
+SemVer:
+
+- **MAYOR = 2**: se mantiene la versión mayor de la refactorización.
+- **MENOR = 1**: funcionalidad nueva y retrocompatible.
+- **PARCHE = 0**: no es una corrección.
+
+El grafo de la sección 4 es el de la Parte 7 y no incluye la rama `feature/cliente-empresarial` ni el tag `v2.1.0`. El detalle está en `08-cliente-empresarial.md`.
