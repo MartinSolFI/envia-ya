@@ -13,6 +13,7 @@ RECARGO_NACIONAL = Decimal("0.40")
 RECARGO_FINDE = Decimal("2000")
 DESCUENTO_FRECUENTE = Decimal("0.05")
 DESCUENTO_VIP = Decimal("0.15")
+DESCUENTO_EMPRESARIAL = Decimal("0.12")
 DESCUENTO_ENVIO10 = Decimal("0.10")
 COSTO_MINIMO = Decimal("5000")
 UNIDAD_REDONDEO = Decimal("100")
@@ -52,6 +53,9 @@ class Cliente:
     def descuento(self, total: Decimal) -> Decimal:
         return total
 
+    def aplica_recargo_zona(self, peso: Decimal) -> bool:
+        return True
+
 
 class ClienteNormal(Cliente):
     pass
@@ -67,10 +71,19 @@ class ClienteVip(Cliente):
         return total - total * DESCUENTO_VIP
 
 
+class ClienteEmpresarial(Cliente):
+    def descuento(self, total: Decimal) -> Decimal:
+        return total - total * DESCUENTO_EMPRESARIAL
+
+    def aplica_recargo_zona(self, peso: Decimal) -> bool:
+        return peso <= LIMITE_TRAMO_2
+
+
 CLIENTES = {
     "normal": ClienteNormal(),
     "frecuente": ClienteFrecuente(),
     "vip": ClienteVip(),
+    "empresarial": ClienteEmpresarial(),
 }
 
 
@@ -131,7 +144,8 @@ def calc(p, z, c, d, cup=None):
     cliente = CLIENTES.get(c, CLIENTES["normal"])
 
     total = _tarifa_base(peso)
-    total = zona.recargo(total)
+    if cliente.aplica_recargo_zona(peso):
+        total = zona.recargo(total)
     total = _recargo_finde(dia, total)
     total = cliente.descuento(total)
     total = _descuento_cupon(cup, total)
