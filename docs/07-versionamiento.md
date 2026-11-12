@@ -114,3 +114,13 @@ SemVer:
 - **PARCHE = 0**: no es una corrección.
 
 El grafo de la sección 4 es el de la Parte 7 y no incluye la rama `feature/cliente-empresarial` ni el tag `v2.1.0`. El detalle está en `08-cliente-empresarial.md`.
+
+## 7. Versión 2.1.1 (corrección de documentación)
+
+La versión `v2.1.1` es un parche de documentación sobre `v2.1.0`. No cambia el código ni las pruebas: corrige las métricas de la Parte 5, completa el análisis de la Parte 6 y alinea la trazabilidad de la Parte 8.
+
+- **MAYOR = 2**: se mantiene.
+- **MENOR = 1**: se mantiene.
+- **PARCHE = 1**: corrige documentación sin cambiar la funcionalidad.
+
+El tag `v2.1.1` apunta al commit final de `main` con las correcciones. `v2.1.0` se conserva en `db3eadd` para la entrega de la Parte 8.

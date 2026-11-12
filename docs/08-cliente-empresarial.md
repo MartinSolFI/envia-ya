@@ -98,7 +98,8 @@ En la corrección final de documentación se actualizaron `docs/01`, `docs/02`, 
 - Rama: `feature/cliente-empresarial`.
 - Commits: `cca2196` (pruebas), `00551bd` (implementación), `d5ef3d2` (documentación).
 - Merge a `main`: `db3eadd`.
-- Tag: `v2.1.0`.
+- Tag de la Parte 8: `v2.1.0`.
+- Tag final con correcciones de documentación: `v2.1.1`.
 - Pruebas: 98 aprobadas.
 - Cobertura: 100 % (97 sentencias, 16 ramas).
 

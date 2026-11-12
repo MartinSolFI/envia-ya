@@ -5,6 +5,16 @@ Todos los cambios importantes de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 El versionado sigue [SemVer](https://semver.org/lang/es/).
 
+## [2.1.1] - 2026-11-11
+
+### Added
+
+- Secciones de sustentación y capturas para el PDF en las Partes 5, 6 y 8.
+
+### Changed
+
+- Corregí las métricas, los code smells, la clasificación de cambios, el diagrama UML y la trazabilidad de las Partes 5, 6 y 8.
+
 ## [2.1.0] - 2026-11-11
 
 ### Added
