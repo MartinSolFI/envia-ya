@@ -12,7 +12,7 @@ Estudiante: Martín Alejandro Solano Finol · Código: 0182410126
 
 | Requerimiento | Casos | Qué verifica |
 |---|---|---|
-| R9 | CE-01, CE-02, CE-05, CE-06 | Descuento del 12 % |
+| R9 | CE-01, CE-02, CE-03, CE-04, CE-05, CE-06 | Descuento del 12 % |
 | R10 | CE-03, CE-04, CE-06 | Sin recargo de zona si el peso supera 10 kg; con 10 kg sí se aplica |
 | R11 | CE-05, CE-06 | Descuento del cliente antes del cupón |
 
@@ -56,9 +56,9 @@ Esto respeta el principio Abierto/Cerrado: agregar un cliente nuevo no obliga a 
 
 ## 5. Ciclo rojo-verde
 
-1. Escribí primero los casos CE-01 a CE-06 y actualicé la función de referencia.
+1. Escribí primero los casos CE-01 a CE-06 y actualicé la función de referencia. Ese estado quedó en `cca2196`.
 2. **Estado rojo**: 6 fallos y 92 pruebas aprobadas. De esas 92, 86 eran las pruebas anteriores y 6 eran las pruebas de la referencia CE. Los fallos fueron CE-01 a CE-06 porque `calc` no conocía el cliente empresarial.
-3. Implementé el cliente y la regla de zona.
+3. Implementé el cliente y la regla de zona. Ese estado quedó en `00551bd`.
 4. **Estado verde**: 98 pruebas aprobadas.
 
 ## 6. Métricas
@@ -84,10 +84,14 @@ La API no cambia: `calc(p, z, c, d, cup=None)` sigue igual. El cliente empresari
 
 ## 9. Archivos modificados
 
+En la rama `feature/cliente-empresarial`:
+
 - `envios.py`
 - `tests/test_envios.py`
 - `CHANGELOG.md`
 - `docs/08-cliente-empresarial.md`
+
+En la corrección final de documentación se actualizaron `docs/01`, `docs/02`, `docs/03`, `docs/03b`, `docs/04b`, `docs/05`, `docs/06` y `docs/07` para reflejar la Parte 8.
 
 ## 10. Estado final
 
@@ -97,3 +101,20 @@ La API no cambia: `calc(p, z, c, d, cup=None)` sigue igual. El cliente empresari
 - Tag: `v2.1.0`.
 - Pruebas: 98 aprobadas.
 - Cobertura: 100 % (97 sentencias, 16 ramas).
+
+## 11. Para la sustentación
+
+- Puedo explicar el análisis de impacto: solo cambia la estrategia del cliente y la decisión de aplicar el recargo de zona.
+- Puedo explicar el ciclo rojo-verde: primero fallaron CE-01 a CE-06 y luego pasaron las 98 pruebas.
+- Puedo explicar por qué es mantenimiento perfectivo y por qué la versión es `v2.1.0` (minor).
+- Puedo explicar el supuesto: el descuento empresarial se aplica antes del cupón.
+- Puedo explicar el límite: con 10 kg sí se cobra zona; con más de 10 kg no.
+
+### Capturas para el PDF
+
+- `git log --oneline --graph --all --decorate` con la rama `feature/cliente-empresarial` y el merge `db3eadd`.
+- `git tag -n` con `v2.1.0`.
+- En `cca2196`, `python -m pytest -q` con 6 fallos CE y 92 aprobadas.
+- En `main`, `python -m pytest -q` con 98 aprobadas.
+- `python -m pytest --cov=envios --cov-branch --cov-report=term-missing -q` con 100 %.
+- `python -m radon cc envios.py -s` con complejidad máxima 3 y `calc` 2.
