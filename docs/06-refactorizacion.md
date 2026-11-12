@@ -13,16 +13,18 @@ No cambié los resultados esperados. Solo cambié la forma de calcular y las ent
 
 ## 2. Code smells identificados
 
-| # | Code smell | Dónde estaba | Por qué era un problema | Cómo lo corregí |
+| # | Code smell | Línea (v1.0.0) | Deuda técnica | Cómo lo corregí |
 |---|---|---|---|---|
-| 1 | Nombres crípticos | `calc(p, z, c, d, cup)`, `t` | No se entiende qué representa cada dato | Usé `peso`, `zona`, `cliente`, `dia`, `cupon` y `total` |
-| 2 | Números mágicos | 6000, 9000, 800, 0.05, 0.10, 5000, 100, 6, 50 | Cambiar una tarifa obliga a buscar números por todo el código | Creé constantes con nombre |
-| 3 | Función larga | `calc` hacía validación, tarifa, recargos, descuentos, mínimo, redondeo y salida | Era difícil de leer, probar y mantener | Dividí el cálculo en funciones pequeñas |
-| 4 | Flag argument y salida por consola | `flag` y `print("costo:", t)` | Mezclaba el cálculo con la presentación y agregaba una rama artificial | Eliminé `flag` y el `print` |
-| 5 | Código muerto | `if z == "urbana": t = t` | No hacía nada y confundía | La estrategia `ZonaUrbana` usa el recargo por defecto |
-| 6 | Condicionales duplicados | `if/elif` para zona y para cliente | Agregar una zona o un cliente obligaba a tocar varios `if` | Usé el patrón Estrategia para zona y cliente |
-| 7 | `float` para dinero | `t + t * 0.20` y `int(t / 100) * 100` | Los decimales binarios y el truncado producían errores de redondeo | Usé `Decimal` y `ROUND_HALF_UP` |
-| 8 | Configuración global mutable | Diccionario `CONFIG` | Cualquier módulo podía cambiar las tarifas en tiempo de ejecución | Reemplacé `CONFIG` por constantes inmutables |
+| 1 | Nombres crípticos | 12: `calc(p, z, c, d, cup)`; `t` en todo el cuerpo | No se entiende qué representa cada dato | Usé `peso`, `zona`, `cliente`, `dia`, `cupon` y `total` en las variables internas; la firma pública se mantiene por compatibilidad |
+| 2 | Números mágicos | 16, 18, 20, 24, 26, 31, 33, 36, 37, 41 | Cambiar una tarifa obliga a buscar números por todo el código | Creé constantes con nombre |
+| 3 | Función larga | 12-41 | Hacía validación, tarifa, recargos, descuentos, mínimo, redondeo y salida | Dividí el cálculo en funciones pequeñas |
+| 4 | Flag argument y salida por consola | 12 (`flag=False`), 39-40 (`print`) | Mezclaba el cálculo con la presentación y agregaba una rama artificial | Eliminé `flag` y el `print` |
+| 5 | Código muerto | 21-22 (`if z == "urbana": t = t`) | No hacía nada y confundía | La estrategia `ZonaUrbana` usa el recargo por defecto |
+| 6 | Condicionales duplicados | 21-26 (zona), 30-33 (cliente) | Agregar una zona o un cliente obligaba a tocar varios `if` | Usé el patrón Estrategia para zona y cliente |
+| 7 | `float` para dinero | 24, 26, 31, 33, 36, 41 | Los decimales binarios y el truncado producían errores de redondeo | Usé `Decimal` y `ROUND_HALF_UP` |
+| 8 | Configuración global mutable | 2-9 (`CONFIG`) | Cualquier módulo podía cambiar las tarifas en tiempo de ejecución | Reemplacé `CONFIG` por constantes inmutables |
+
+La firma pública se mantiene `calc(p, z, c, d, cup=None)` para no romper las llamadas existentes; los nombres descriptivos se usan dentro de `calc` y en las funciones auxiliares.
 
 También había validación incompleta: no se revisaba la zona ni el día. Eso quedó registrado como DEF-03 y DEF-04.
 
@@ -36,6 +38,17 @@ También había validación incompleta: no se revisaba la zona ni el día. Eso q
 | DEF-04 | `_validar_dia` lanza `ValueError("día inválido")` | CN-06, CN-07 |
 | DEF-05 | `_redondear` usa `Decimal` y `ROUND_HALF_UP` | CN-12, CN-19, CN-21, CN-25, CN-26 |
 | DEF-06 | `_validar_peso` lanza `ValueError("peso inválido")` | CN-01, CN-02, CN-03, CB-02, CB-03 |
+
+### Clasificación de los cambios
+
+| Cambio | Tipo | Justificación |
+|---|---|---|
+| Correcciones DEF-01 a DEF-06 | Correctivo | Eliminan fallos contra la especificación. |
+| Suite de 43 casos y referencia con `Decimal` | Preventivo | Detectan regresiones y validan los resultados esperados. |
+| Funciones pequeñas, constantes, Estrategia y `Decimal` | Perfectivo | Mejoran la estructura y la mantenibilidad sin cambiar la funcionalidad esperada. |
+| Eliminación de `flag` y `print` | Perfectivo | Separan el cálculo de la presentación y reducen ramas artificiales. |
+| Cliente empresarial de la Parte 8 | Perfectivo | Agrega funcionalidad nueva y mejora la utilidad del sistema. |
+| Cambios adaptativos | Ninguno | No cambió el entorno ni una dependencia externa. |
 
 ## 4. Diseño de la refactorización
 
@@ -64,6 +77,44 @@ Usé una clase base para cada familia de reglas:
 - `ClienteFrecuente` y `ClienteVip` sobrescriben `descuento`.
 
 Los diccionarios `ZONAS` y `CLIENTES` relacionan el texto de entrada con la estrategia. Así `calc` no necesita una cadena de `if/elif`. Para la Parte 8 solo tendré que agregar una estrategia nueva para el cliente empresarial.
+
+```mermaid
+classDiagram
+    class Zona {
+        +recargo(total) Decimal
+    }
+    class ZonaUrbana
+    class ZonaRural {
+        +recargo(total) Decimal
+    }
+    class ZonaNacional {
+        +recargo(total) Decimal
+    }
+    class Cliente {
+        +descuento(total) Decimal
+        +aplica_recargo_zona(peso) bool
+    }
+    class ClienteNormal
+    class ClienteFrecuente {
+        +descuento(total) Decimal
+    }
+    class ClienteVip {
+        +descuento(total) Decimal
+    }
+    class ClienteEmpresarial {
+        +descuento(total) Decimal
+        +aplica_recargo_zona(peso) bool
+    }
+    Zona <|-- ZonaUrbana
+    Zona <|-- ZonaRural
+    Zona <|-- ZonaNacional
+    Cliente <|-- ClienteNormal
+    Cliente <|-- ClienteFrecuente
+    Cliente <|-- ClienteVip
+    Cliente <|-- ClienteEmpresarial
+```
+
+El diagrama muestra el estado final; `ClienteEmpresarial` se agregó en la Parte 8.
 
 ## 6. Cambios en las pruebas
 
@@ -126,10 +177,20 @@ Resultados:
 
 ## 11. Para la sustentación
 
-- Puedo explicar cada code smell con el cambio concreto que hice.
+- Puedo explicar cada code smell con su línea y el cambio concreto que hice.
 - Puedo mostrar que la complejidad máxima bajó de 15 a 3 con `radon`.
 - Puedo explicar que las líneas subieron porque separé constantes y estrategias, pero la función principal quedó en complejidad 1.
 - Puedo mostrar las 86 pruebas aprobadas y la cobertura del 100 %.
+- Puedo explicar la diferencia entre cambios correctivos, perfectivos y preventivos.
+- Puedo mostrar el diagrama UML del patrón Estrategia.
+
+### Capturas para el PDF
+
+- Tabla de code smells con las líneas de `v1.0.0`.
+- Diagrama UML Mermaid renderizado.
+- `git switch refactor/estrategia` y `python -m pytest -q` con 86 pruebas aprobadas.
+- `python -m radon cc envios.py -s` antes y después.
+- `python -m pytest --cov=envios --cov-branch --cov-report=term-missing -q` con 100 % de cobertura.
 
 ## 12. Nota de cierre (Parte 8)
 
